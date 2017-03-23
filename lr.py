@@ -17,6 +17,7 @@ from sklearn.multioutput import MultiOutputRegressor
 import sys
 import math
 
+
 data_1_lyr = np.loadtxt('training_data/training_01_layer.csv',skiprows=1,delimiter=',',usecols=range(1,21))
 Xtrain = data_1_lyr[0:1000,0:2]
 Ytrain = np.log(data_1_lyr[0:1000,2:20])
