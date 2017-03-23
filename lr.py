@@ -42,25 +42,16 @@ if True:
 	print "Score: " + str(clsfr.score(Xtest,Ytest))
 
 	#Ypred_class_prob = clsfr.predict_proba(Xtest)
-	Ypred_classification = clsfr.predict(Xtest)
+	Ypred = clsfr.predict(Xtest)
 
 	#f, ((ax1,ax2),(ax3,ax4), (ax5,ax6)) = plt.subplots(3,2)
-	f, ((ax1,ax2)) = plt.subplots(1,2)
+	f, ((ax1)) = plt.subplots(1,1)
 
-	fpr,tpr,thresholds = metrics.roc_curve(Ytest,Ypred_1,pos_label=1,drop_intermediate=False)
-	roc_auc = metrics.auc(fpr,tpr)
-
-	fprc,tprc,thresholdsc = metrics.roc_curve(Ytest,Ypred_classification,pos_label=1,drop_intermediate=False)
-	roc_aucc = metrics.auc(fprc,tprc)
-
-	lw = 2
-
-	ax1.plot(fpr, tpr, color='darkorange',
-	         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
-	ax1.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-	ax1.set_xlim([0.0, 1.0])
-	ax1.set_ylim([0.0, 1.05])
-	ax1.set_xlabel('False Positive Rate')
-	ax1.set_ylabel('True Positive Rate')
-	ax1.set_title('Receiver operating characteristic test data')
-	ax1.legend(loc="lower right")
+	#ax1.plot(Xtest, Ypred, color='darkorange',
+	#         lw=2)
+	ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(Ytest-Ypred), color='navy')
+	ax1.set_xlabel('Time(s)')
+	ax1.set_ylabel('Response')
+	ax1.set_title('Residuals of Predicted Responses')
+	#ax1.legend(loc="lower right")
+	plt.show()
