@@ -24,12 +24,13 @@ xtimesw = np.loadtxt('xtimes.txt')
 xtimesm = (xtimesw[:,0] + xtimesw[:,1] ) * 0.5
 
 layers = 3
-trsize = 1000
-data_1_lyr = np.loadtxt('training_data/training_0%d_layer.csv'%(layers),skiprows=1,delimiter=',',usecols=range(1,19+2*layers))
-Xtrain = data_1_lyr[0:9000,0:(2*layers)]
-Ytrain = np.log(data_1_lyr[0:9000,(2*layers):(2*layers+18)])
-Xtest = data_1_lyr[9000:,0:(2*layers)]
-Ytest = np.log(data_1_lyr[9000:,(2*layers):(2*layers+18)])
+trsize = 99000
+tesize = 1000.0
+data_1_lyr = np.loadtxt('training_data_100k/training_0%d_layer.csv'%(layers),skiprows=1,delimiter=',',usecols=range(1,19+2*layers))
+Xtrain = data_1_lyr[0:trsize,0:(2*layers)]
+Ytrain = np.log(data_1_lyr[0:trsize,(2*layers):(2*layers+18)])
+Xtest = data_1_lyr[trsize:,0:(2*layers)]
+Ytest = np.log(data_1_lyr[trsize:,(2*layers):(2*layers+18)])
 
 
 def main():
@@ -55,9 +56,10 @@ def main():
         residuals = np.divide(Ytest-Ypred,Ytest)
 
         maxres = np.amax(residuals,axis=1)
-        m1pc = len(maxres[np.where(maxres > 0.01)]) * 1.0 / trsize
-        m5pc = len(maxres[np.where(maxres > 0.05)]) * 1.0 / trsize
-        m10pc = len(maxres[np.where(maxres > 0.1)]) * 1.0 / trsize
+        m1pc = len(maxres[np.where(maxres > 0.01)]) *100.0/ tesize
+        m5pc = len(maxres[np.where(maxres > 0.05)]) *100.0/ tesize
+        m10pc = len(maxres[np.where(maxres > 0.1)]) *100.0/ tesize
+	print "Ytest shape: " + str(Ytest.shape)
         print "Models that differ by more than 1%: " + str(m1pc)
         print "Models that differ by more than 5%: " + str(m5pc)
         print "Models that differ by more than 10%: " + str(m10pc)
