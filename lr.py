@@ -31,35 +31,38 @@ Xtest = data_1_lyr[9000:,0:(2*layers)]
 Ytest = np.log(data_1_lyr[9000:,(2*layers):(2*layers+18)])
 
 
-if True:
-	#clsfr = MultiOutputRegressor(linear_model.LinearRegression(),n_jobs=-1)
-	clsfr = Pipeline([('poly',PolynomialFeatures(degree=3)),
+def main():
+        #clsfr = MultiOutputRegressor(linear_model.LinearRegression(),n_jobs=-1)
+        clsfr = Pipeline([('poly',PolynomialFeatures(degree=3)),
                           ('linear', LinearRegression(fit_intercept=False))])
 
-	clsfr.fit(Xtrain, Ytrain)
+        clsfr.fit(Xtrain, Ytrain)
 
-	print "Score: " + str(clsfr.score(Xtest,Ytest))
+        print "Score: " + str(clsfr.score(Xtest,Ytest))
 
-	#Ypred_class_prob = clsfr.predict_proba(Xtest)
-	Ypred = clsfr.predict(Xtest)
+        #Ypred_class_prob = clsfr.predict_proba(Xtest)
+        Ypred = clsfr.predict(Xtest)
 
-	#f, ((ax1,ax2),(ax3,ax4), (ax5,ax6)) = plt.subplots(3,2)
-	f, ((ax1)) = plt.subplots(1,1)
+        #f, ((ax1,ax2),(ax3,ax4), (ax5,ax6)) = plt.subplots(3,2)
+        f, ((ax1)) = plt.subplots(1,1)
 
-	#ax1.plot(Xtest, Ypred, color='darkorange',
-	#         lw=2)
-	bins = np.arange(0,1,0.01)
-	#residuals = np.divide(Ytest-Ypred,Ytest)
-	residuals = np.divide(Ytest-Ypred,Ytest)
-	resim = np.zeros((bins.size - 1,Ytest.shape[1]))
-	for tw in range(Ytest.shape[1]):
-		(h,be) = np.histogram(np.log1p(np.absolute(residuals[:,tw])),bins)
-		resim[:,tw] = h
-	ax1.imshow(resim,interpolation=None,aspect='auto')
-	#ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
-	#ax1.scatter(np.tile(xtimesm,Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
-	ax1.set_xlabel('Time Window')
-	ax1.set_ylabel('Response Residuals')
-	ax1.set_title('Residuals of Predicted Responses')
-	ax1.legend(loc="lower right")
-	plt.show()
+        #ax1.plot(Xtest, Ypred, color='darkorange',
+        #         lw=2)
+        bins = np.arange(0,1,0.01)
+        #residuals = np.divide(Ytest-Ypred,Ytest)
+        residuals = np.divide(Ytest-Ypred,Ytest)
+        resim = np.zeros((bins.size - 1,Ytest.shape[1]))
+        for tw in range(Ytest.shape[1]):
+                (h,be) = np.histogram(np.log1p(np.absolute(residuals[:,tw])),bins)
+                resim[:,tw] = h
+        ax1.imshow(resim,interpolation=None,aspect='auto')
+        #ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
+        #ax1.scatter(np.tile(xtimesm,Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
+        ax1.set_xlabel('Time Window')
+        ax1.set_ylabel('Response Residuals')
+        ax1.set_title('Residuals of Predicted Responses')
+        ax1.legend(loc="lower right")
+        plt.show()
+
+if __name__ == '__main__':
+	main()
