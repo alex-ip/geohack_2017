@@ -17,6 +17,7 @@ from sklearn.multioutput import MultiOutputRegressor
 import sys
 import math
 
+
 data_1_lyr = np.loadtxt('training_data/training_01_layer.csv',skiprows=1,delimiter=',',usecols=range(1,21))
 Xtrain = data_1_lyr[0:1000,0:2]
 Ytrain = np.log(data_1_lyr[0:1000,2:20])
@@ -44,23 +45,9 @@ if True:
 	#Ypred_class_prob = clsfr.predict_proba(Xtest)
 	Ypred_classification = clsfr.predict(Xtest)
 
-	#f, ((ax1,ax2),(ax3,ax4), (ax5,ax6)) = plt.subplots(3,2)
-	f, ((ax1,ax2)) = plt.subplots(1,2)
+	f, ax = plt.subplots(1,1)
+        
+        print np.shape(Ypred_classification)
 
-	fpr,tpr,thresholds = metrics.roc_curve(Ytest,Ypred_1,pos_label=1,drop_intermediate=False)
-	roc_auc = metrics.auc(fpr,tpr)
-
-	fprc,tprc,thresholdsc = metrics.roc_curve(Ytest,Ypred_classification,pos_label=1,drop_intermediate=False)
-	roc_aucc = metrics.auc(fprc,tprc)
-
-	lw = 2
-
-	ax1.plot(fpr, tpr, color='darkorange',
-	         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
-	ax1.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-	ax1.set_xlim([0.0, 1.0])
-	ax1.set_ylim([0.0, 1.05])
-	ax1.set_xlabel('False Positive Rate')
-	ax1.set_ylabel('True Positive Rate')
-	ax1.set_title('Receiver operating characteristic test data')
-	ax1.legend(loc="lower right")
+        ax.scatter(Ytest.ravel(), Ypred_classification.ravel())
+        plt.savefig('a.pdf')
