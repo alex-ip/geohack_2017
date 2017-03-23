@@ -24,7 +24,8 @@ xtimesw = np.loadtxt('xtimes.txt')
 xtimesm = (xtimesw[:,0] + xtimesw[:,1] ) * 0.5
 
 layers = 3
-data_1_lyr = np.loadtxt('training_data/training_0%d_layer.csv'%(layers),skiprows=1,delimiter=',',usecols=range(1,21))
+trsize = 1000
+data_1_lyr = np.loadtxt('training_data/training_0%d_layer.csv'%(layers),skiprows=1,delimiter=',',usecols=range(1,19+2*layers))
 Xtrain = data_1_lyr[0:9000,0:(2*layers)]
 Ytrain = np.log(data_1_lyr[0:9000,(2*layers):(2*layers+18)])
 Xtest = data_1_lyr[9000:,0:(2*layers)]
@@ -33,12 +34,13 @@ Ytest = np.log(data_1_lyr[9000:,(2*layers):(2*layers+18)])
 
 def main():
         #clsfr = MultiOutputRegressor(linear_model.LinearRegression(),n_jobs=-1)
-        clsfr = Pipeline([('poly',PolynomialFeatures(degree=3)),
+        clsfr = Pipeline([('poly',PolynomialFeatures(degree=5)),
                           ('linear', LinearRegression(fit_intercept=False))])
 
         clsfr.fit(Xtrain, Ytrain)
 
         print "Score: " + str(clsfr.score(Xtest,Ytest))
+
 
         #Ypred_class_prob = clsfr.predict_proba(Xtest)
         Ypred = clsfr.predict(Xtest)
@@ -51,6 +53,15 @@ def main():
         bins = np.arange(0,1,0.01)
         #residuals = np.divide(Ytest-Ypred,Ytest)
         residuals = np.divide(Ytest-Ypred,Ytest)
+
+        maxres = np.amax(residuals,axis=1)
+        m1pc = len(maxres[np.where(maxres > 0.01)]) * 1.0 / trsize
+        m5pc = len(maxres[np.where(maxres > 0.05)]) * 1.0 / trsize
+        m10pc = len(maxres[np.where(maxres > 0.1)]) * 1.0 / trsize
+        print "Models that differ by more than 1%: " + str(m1pc)
+        print "Models that differ by more than 5%: " + str(m5pc)
+        print "Models that differ by more than 10%: " + str(m10pc)
+
         resim = np.zeros((bins.size - 1,Ytest.shape[1]))
         for tw in range(Ytest.shape[1]):
                 (h,be) = np.histogram(np.log1p(np.absolute(residuals[:,tw])),bins)
