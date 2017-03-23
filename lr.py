@@ -49,7 +49,7 @@ if True:
 
 	#ax1.plot(Xtest, Ypred, color='darkorange',
 	#         lw=2)
-	ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(Ytest-Ypred), color='navy')
+	ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
 	ax1.set_xlabel('Time(s)')
 	ax1.set_ylabel('Response')
 	ax1.set_title('Residuals of Predicted Responses')
