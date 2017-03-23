@@ -19,11 +19,13 @@ import math
 
 xtimesw = np.loadtxt('xtimes.txt')
 xtimesm = (xtimesw[:,0] + xtimesw[:,1] ) * 0.5
-data_1_lyr = np.loadtxt('training_data/training_01_layer.csv',skiprows=1,delimiter=',',usecols=range(1,21))
-Xtrain = data_1_lyr[0:1000,0:2]
-Ytrain = np.log(data_1_lyr[0:1000,2:20])
-Xtest = data_1_lyr[1000:,0:2]
-Ytest = np.log(data_1_lyr[1000:,2:20])
+
+layers = 5
+data_1_lyr = np.loadtxt('training_data/training_0%d_layer.csv'%(layers),skiprows=1,delimiter=',',usecols=range(1,21))
+Xtrain = data_1_lyr[0:9000,0:(2*layers)]
+Ytrain = np.log(data_1_lyr[0:9000,(2*layers):(2*layers+18)])
+Xtest = data_1_lyr[9000:,0:(2*layers)]
+Ytest = np.log(data_1_lyr[9000:,(2*layers):(2*layers+18)])
 
 
 if True:
