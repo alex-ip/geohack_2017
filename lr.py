@@ -17,7 +17,8 @@ from sklearn.multioutput import MultiOutputRegressor
 import sys
 import math
 
-
+xtimesw = np.loadtxt('xtimes.txt')
+xtimesm = (xtimesw[:,0] + xtimesw[:,1] ) * 0.5
 data_1_lyr = np.loadtxt('training_data/training_01_layer.csv',skiprows=1,delimiter=',',usecols=range(1,21))
 Xtrain = data_1_lyr[0:1000,0:2]
 Ytrain = np.log(data_1_lyr[0:1000,2:20])
@@ -36,6 +37,7 @@ if True:
 	#clsfr = SVC(verbose=True,probability=True)
 	#clsfr = RandomForestClassifier(verbose=True)
 	#clsfr = MLPClassifier(solver='lbfgs',verbose=True)
+	#clsfr = MultiOutputRegressor(linear_model.LinearRegression(),n_jobs=-1)
 	clsfr = MultiOutputRegressor(linear_model.LinearRegression(),n_jobs=-1)
 
 	clsfr.fit(Xtrain, Ytrain)
@@ -50,9 +52,17 @@ if True:
 
 	#ax1.plot(Xtest, Ypred, color='darkorange',
 	#         lw=2)
-	ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
-	ax1.set_xlabel('Time(s)')
-	ax1.set_ylabel('Response')
+	bins = np.arange(0,1,0.01)
+	residuals = np.divide(Ytest-Ypred,Ytest)
+	resim = np.zeros((bins.size - 1,Ytest.shape[1]))
+	for tw in range(Ytest.shape[1]):
+		(h,be) = np.histogram(np.log1p(np.absolute(residuals[:,tw])),bins)
+		resim[:,tw] = h
+	ax1.imshow(resim,interpolation=None,aspect='auto')
+	#ax1.scatter(np.tile(np.arange(Ytest.shape[1]),Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
+	#ax1.scatter(np.tile(xtimesm,Ytest.shape[0]), np.ravel(np.divide(Ytest-Ypred,Ytest)), color='navy')
+	ax1.set_xlabel('Time Window')
+	ax1.set_ylabel('Response Residuals')
 	ax1.set_title('Residuals of Predicted Responses')
-	#ax1.legend(loc="lower right")
+	ax1.legend(loc="lower right")
 	plt.show()
